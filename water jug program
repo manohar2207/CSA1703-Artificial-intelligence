@@ -1,0 +1,66 @@
+from collections import deque
+
+def water_jug_problem(capacity_a, capacity_b, target):
+    visited = set()
+    initial_state = (0, 0)
+    queue = deque([(initial_state, [])])
+
+    while queue:
+        current_state, actions = queue.popleft()
+        a, b = current_state
+
+        if a == target or b == target:
+            return actions
+
+        visited.add(current_state)
+
+        if a < capacity_a:
+            new_state = (capacity_a, b)
+            if new_state not in visited:
+                queue.append((new_state, actions + ['Fill jug A']))
+
+        if b < capacity_b:
+            new_state = (a, capacity_b)
+            if new_state not in visited:
+                queue.append((new_state, actions + ['Fill jug B']))
+
+        if a > 0:
+            pour = min(b + a, capacity_b) - b
+            new_state = (a - pour, b + pour)
+            if new_state not in visited:
+                queue.append((new_state, actions + ['Pour from A to B']))
+
+        if b > 0:
+            pour = min(b + a, capacity_a) - a
+            new_state = (a + pour, b - pour)
+            if new_state not in visited:
+                queue.append((new_state, actions + ['Pour from B to A']))
+
+        if a > 0:
+            new_state = (0, b)
+            if new_state not in visited:
+                queue.append((new_state, actions + ['Empty jug A']))
+
+        if b > 0:
+            new_state = (a, 0)
+            if new_state not in visited:
+                queue.append((new_state, actions + ['Empty jug B']))
+
+    return None 
+
+def main():
+    print("Water Jug Problem Solver")
+    capacity_a = int(input("Enter the capacity of jug A: "))
+    capacity_b = int(input("Enter the capacity of jug B: "))
+    target = int(input("Enter the target volume: "))
+
+    actions = water_jug_problem(capacity_a, capacity_b, target)
+    if actions:
+        print("Solution:")
+        for i, action in enumerate(actions):
+            print(f"Step {i + 1}: {action}")
+    else:
+        print("No solution found!")
+
+if __name__ == "__main__":
+    main()
